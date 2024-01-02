@@ -74,6 +74,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 # Instantiate player. Right now, this is just a rectangle.
 player = Player()
 
+# Create groups to hold enemy sprites and all sprites
+# - enemies is used for collision detection and position updates
+# - all_sprites is used for rendering
+enemies = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
+all_sprites.add(player)
+
 run = True
 while run:
 
@@ -91,8 +98,9 @@ while run:
 
     pressed_keys: dict = pygame.key.get_pressed()
 
-    # Update the player sprite based on user keypresses
-    player.update(pressed_keys)
+    # Redraw all sprites including player
+    for entity in all_sprites:
+        screen.blit(entity.surf, entity.rect)
 
     # Fill the background with black
     screen.fill((0, 0, 0))
