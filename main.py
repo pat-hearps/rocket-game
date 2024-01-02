@@ -10,6 +10,15 @@ from pygame.locals import (
 )
 
 
+# Define a Player object by extending pygame.sprite.Sprite
+# The surface drawn on the screen is now an attribute of 'player'
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Player, self).__init__()
+        self.surf = pygame.Surface((75, 25))
+        self.surf.fill((255, 255, 255))
+        self.rect = self.surf.get_rect()
+
 pygame.init()
 
 # Define constants for the screen width and height
@@ -18,6 +27,9 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 # Create the screen object
 # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# Instantiate player. Right now, this is just a rectangle.
+player = Player()
 
 run = True
 while run:
@@ -34,24 +46,11 @@ while run:
         elif event.type == QUIT:
             run = False
 
-    # Fill the background with white
-    screen.fill((255, 255, 255))
+    # Fill the background with black
+    screen.fill((0, 0, 0))
 
-    ## Create a surface and pass in a tuple containing its length and width
-    surf = pygame.Surface((50, 50))
-
-    # Give the surface a color to separate it from the background
-    surf.fill((0, 0, 0))
-    rect = surf.get_rect()
-
-    # This says "Draw surf onto the screen at the center"
-    # Put the center of surf at the center of the display
-    surf_center = (
-        (SCREEN_WIDTH-surf.get_width())/2,
-        (SCREEN_HEIGHT-surf.get_height())/2
-    )
-    # Draw surf at the new coordinates
-    screen.blit(surf, surf_center)
+    # Draw the player on the screen
+    screen.blit(player.surf, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
 
     # Flip the display
     pygame.display.flip()
