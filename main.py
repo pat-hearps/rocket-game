@@ -31,6 +31,7 @@ bg_width = background.get_width()
 # HERE 1 IS THE CONSTANT FOR REMOVING BUFFERING - change to higher number if you get buffering of the imager
 n_tiles = math.ceil(SCREEN_WIDTH / bg_width) + 1
 scroll = 0  # start of background scrolling
+scroll_rate = 1.5
 
 
 # Define a Player object by extending pygame.sprite.Sprite
@@ -122,7 +123,7 @@ while run:
         screen.blit(background, dest=(bg_width * i + scroll, 0)) 
         i += 1
     # FRAMERATE FOR SCROLLING 
-    scroll -= 6
+    scroll -= scroll_rate
   
     # RESET THE SCROLL FRAME 
     if abs(scroll) > bg_width: 
