@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         # self.surf.fill((255, 255, 255))
         self.surf = pygame.image.load("art/RocketWhiteSideR.png").convert()
         # self.surf.set_colorkey((255, 255, 255), RLEACCEL)  # if background is white
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect(center=(40, SCREEN_HEIGHT / 2))  # start in middle of screen
     # Move the sprite based on user keypresses
     def update(self, pressed_keys):
         if pressed_keys[K_UP]:
