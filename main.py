@@ -99,6 +99,9 @@ enemies = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
+# Setup the clock for a decent framerate - before game loop begins
+clock = pygame.time.Clock()
+
 run = True
 while run:
 
@@ -144,6 +147,9 @@ while run:
 
     # Flip the display
     pygame.display.flip()
+
+    # Last step in loop - ensure program maintains desired frame rate of X frames per second
+    clock.tick(60)
 
 # Done! Time to quit.
 pygame.quit()
