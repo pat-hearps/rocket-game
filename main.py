@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         super(Player, self).__init__()
         # self.surf = pygame.Surface((75, 25))
         # self.surf.fill((255, 255, 255))
-        self.surf = pygame.image.load("art/RocketWhiteSideR.png").convert()
+        self.surf = pygame.image.load("art/RocketWhiteSideR.png").convert_alpha()
         # self.surf.set_colorkey((255, 255, 255), RLEACCEL)  # if background is white
         self.rect = self.surf.get_rect(center=(40, SCREEN_HEIGHT / 2))  # start in middle of screen
     # Move the sprite based on user keypresses
@@ -81,7 +81,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = random.randint(1, 7)
         # self.surf = pygame.Surface((20, 10))
         # self.surf.fill((170, 170, 170))
-        self.surf = pygame.image.load(f"art/{enemy_art[self.speed]}").convert()
+        self.surf = pygame.image.load(f"art/{enemy_art[self.speed]}").convert_alpha()
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),  # spawns somewhere off right edge of screen, random distance
