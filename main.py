@@ -45,18 +45,29 @@ class Player(pygame.sprite.Sprite):
 
 # Define the enemy object by extending pygame.sprite.Sprite
 # The surface you draw on the screen is now an attribute of 'enemy'
+enemy_art = {
+    1 : "BluePlanet.png",
+    2 : "FullMoon.png",
+    3 : "PurplePlanet.png",
+    4 : "RedPlanet.png",
+    5 : "Earth.png",
+    6 : "Hurricane.png",
+    7 : "RedMoon.png"
+}
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.surf = pygame.Surface((20, 10))
-        self.surf.fill((170, 170, 170))
+        self.speed = random.randint(1, 7)
+        # self.surf = pygame.Surface((20, 10))
+        # self.surf.fill((170, 170, 170))
+        self.surf = pygame.image.load(f"art/{enemy_art[self.speed]}").convert()
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),  # spawns somewhere off right edge of screen, random distance
                 random.randint(0, SCREEN_HEIGHT),  # spawns somewhere between bottom and top of screen
             )
         )
-        self.speed = random.randint(1, 5)
+        
 
     # Move the sprite based on speed
     # Remove the sprite when it passes the left edge of the screen
