@@ -13,6 +13,10 @@ from pygame.locals import (
 )
 
 MOVE_RATE = 4
+
+# Define constants for the screen width and height
+SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+
 # Define a Player object by extending pygame.sprite.Sprite
 # The surface drawn on the screen is now an attribute of 'player'
 class Player(pygame.sprite.Sprite):
@@ -77,9 +81,6 @@ class Enemy(pygame.sprite.Sprite):
             self.kill()
 
 pygame.init()
-
-# Define constants for the screen width and height
-SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
 
 # Create the screen object
 # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
