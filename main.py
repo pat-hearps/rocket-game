@@ -1,3 +1,4 @@
+import math
 import random
 
 import pygame
@@ -15,7 +16,22 @@ from pygame.locals import (
 MOVE_RATE = 4
 
 # Define constants for the screen width and height
-SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+SCREEN_WIDTH, SCREEN_HEIGHT = 800, 512
+
+pygame.init()
+
+# Create the screen object
+# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# Set up scrolling background images
+background = pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert()
+bg_width = background.get_width()
+
+# HERE 1 IS THE CONSTANT FOR REMOVING BUFFERING - change to higher number if you get buffering of the imager
+n_tiles = math.ceil(SCREEN_WIDTH / bg_width) + 1
+scroll = 0  # start of background scrolling
+
 
 # Define a Player object by extending pygame.sprite.Sprite
 # The surface drawn on the screen is now an attribute of 'player'
@@ -80,11 +96,6 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
 
-pygame.init()
-
-# Create the screen object
-# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Create a custom event for adding a new enemy
 ADDENEMY = pygame.USEREVENT + 1  # just the last reserved event, plus 1
@@ -105,6 +116,17 @@ clock = pygame.time.Clock()
 
 run = True
 while run:
+    # append background image to front of same image
+    i = 0
+    while(i < n_tiles): 
+        screen.blit(background, dest=(bg_width * i + scroll, 0)) 
+        i += 1
+    # FRAMERATE FOR SCROLLING 
+    scroll -= 6
+  
+    # RESET THE SCROLL FRAME 
+    if abs(scroll) > bg_width: 
+        scroll = 0
 
     # Look at every event in the queue
     for event in pygame.event.get():
@@ -129,9 +151,6 @@ while run:
 
     # Update all enemy positions
     enemies.update()  # calls self.update() method on all enemy sprites in the group
-
-    # Fill the background with black
-    screen.fill((0, 0, 0))
 
     # Redraw all sprites including player
     for entity in all_sprites:
