@@ -13,8 +13,10 @@ from pygame.locals import (
     KEYDOWN,
     QUIT,
 )
+from pygame.transform import rotozoom
 
 ROCKET_MOVE_RATE = 4
+SPRITE_SIZE = 2
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--difficulty","-d", type=int, default=4)
@@ -33,7 +35,7 @@ def scale_variable(variable, inverse_difficulty=INVERSE_DIFFICULTY):
     return variable * (2 * (1.25 ** -inverse_difficulty))
 
 # Define constants for the screen width and height
-SCREEN_WIDTH, SCREEN_HEIGHT = 800, 512
+SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
 
 pygame.init()
 
@@ -42,7 +44,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Set up scrolling background images
-background = pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert()
+background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=SPRITE_SIZE)
 bg_width = background.get_width()
 
 # HERE 1 IS THE CONSTANT FOR REMOVING BUFFERING - change to higher number if you get buffering of the imager
@@ -58,7 +60,7 @@ class Player(pygame.sprite.Sprite):
         super(Player, self).__init__()
         # self.surf = pygame.Surface((75, 25))
         # self.surf.fill((255, 255, 255))
-        self.surf = pygame.image.load("art/RocketWhiteSideR.png").convert_alpha()
+        self.surf = rotozoom(pygame.image.load("art/RocketWhiteSideR.png").convert_alpha(), angle=0, scale=SPRITE_SIZE*2)
         # self.surf.set_colorkey((255, 255, 255), RLEACCEL)  # if background is white
         self.rect = self.surf.get_rect(center=(40, SCREEN_HEIGHT / 2))  # start in middle of screen
     # Move the sprite based on user keypresses
@@ -99,7 +101,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed =  scale_variable(self.id)
         # self.surf = pygame.Surface((20, 10))
         # self.surf.fill((170, 170, 170))
-        self.surf = pygame.image.load(f"art/{enemy_art[self.id]}").convert_alpha()
+        self.surf = rotozoom(pygame.image.load(f"art/{enemy_art[self.id]}").convert_alpha(), angle=0, scale=SPRITE_SIZE)
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),  # spawns somewhere off right edge of screen, random distance
