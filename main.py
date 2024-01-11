@@ -1,3 +1,4 @@
+import argparse
 import math
 import random
 
@@ -14,6 +15,22 @@ from pygame.locals import (
 )
 
 ROCKET_MOVE_RATE = 4
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--difficulty","-d", type=int, default=4)
+args = parser.parse_args()
+difficulty = args.difficulty
+
+BASE_NME_SPEED = 5.0  # pixels / frame
+BASE_NME_SPAWN_RATE = 400.0  # milliseconds between spawns
+checked_difficulty = max(min(difficulty, 10), 1)  # enforce between 1-10
+INVERSE_DIFFICULTY = 10 - checked_difficulty
+
+print(f"running at difficulty = {difficulty}  (inverse = {INVERSE_DIFFICULTY})")
+
+def scale_variable(variable, inverse_difficulty=INVERSE_DIFFICULTY):
+    """applies slightly non-linear increasing scale to speed etc based on difficulty level"""
+    return variable * (2 * (1.25 ** -inverse_difficulty))
 
 # Define constants for the screen width and height
 SCREEN_WIDTH, SCREEN_HEIGHT = 800, 512
@@ -78,10 +95,11 @@ enemy_art = {
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.speed = random.randint(1, 7)
+        self.id = random.randint(1, 7)
+        self.speed =  scale_variable(self.id)
         # self.surf = pygame.Surface((20, 10))
         # self.surf.fill((170, 170, 170))
-        self.surf = pygame.image.load(f"art/{enemy_art[self.speed]}").convert_alpha()
+        self.surf = pygame.image.load(f"art/{enemy_art[self.id]}").convert_alpha()
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),  # spawns somewhere off right edge of screen, random distance
@@ -100,7 +118,8 @@ class Enemy(pygame.sprite.Sprite):
 
 # Create a custom event for adding a new enemy
 ADDENEMY = pygame.USEREVENT + 1  # just the last reserved event, plus 1
-pygame.time.set_timer(ADDENEMY, millis=250)  # 250 milliseconds
+spawn_freq = INVERSE_DIFFICULTY * 85 + 100
+pygame.time.set_timer(ADDENEMY, millis=spawn_freq)  # spawn every {freq} milliseconds
 
 # Instantiate player. Right now, this is just a rectangle.
 player = Player()
