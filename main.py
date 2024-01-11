@@ -120,7 +120,8 @@ class Enemy(pygame.sprite.Sprite):
 
 # Create a custom event for adding a new enemy
 ADDENEMY = pygame.USEREVENT + 1  # just the last reserved event, plus 1
-spawn_freq = INVERSE_DIFFICULTY * 85 + 100
+spawn_freq = INVERSE_DIFFICULTY * 150 + 100
+print(f"spawning enemies every {spawn_freq} millis")
 pygame.time.set_timer(ADDENEMY, millis=spawn_freq)  # spawn every {freq} milliseconds
 
 # Instantiate player. Right now, this is just a rectangle.
