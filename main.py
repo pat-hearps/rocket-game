@@ -34,11 +34,13 @@ def main(difficulty: int):
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     # Set up scrolling background images
-    background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=SPRITE_SIZE)
+    background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=1)
     bg_width = background.get_width()
+    bg_height = background.get_height()
 
     # HERE 1 IS THE CONSTANT FOR REMOVING BUFFERING - change to higher number if you get buffering of the imager
-    n_tiles = math.ceil(SCREEN_WIDTH / bg_width) + 1
+    n_tiles_scrolling = math.ceil(SCREEN_HEIGHT / bg_width) + 1
+    n_tiles_across = math.ceil(SCREEN_WIDTH / bg_height)  # how many tiles to stitch together to fill the screen, don't need extra
     scroll = 0  # start of background scrolling
     scroll_rate = 1.5
 
@@ -65,8 +67,9 @@ def main(difficulty: int):
     while run:
         # append background image to front of same image
         i = 0
-        while(i < n_tiles): 
-            screen.blit(background, dest=(bg_width * i + scroll, 0)) 
+        while(i < n_tiles_scrolling):
+            for t in range(n_tiles_across):
+                screen.blit(background, dest=(bg_width * i + scroll, t * bg_height)) 
             i += 1
         # FRAMERATE FOR SCROLLING 
         scroll -= scroll_rate
