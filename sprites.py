@@ -74,5 +74,5 @@ class Enemy(pygame.sprite.Sprite):
     # Remove the sprite when it passes the left edge of the screen
     def update(self):
         self.rect.move_ip(0, self.speed)
-        if self.rect.right < 0:
+        if self.rect.bottom > self.height_lim:
             self.kill()
