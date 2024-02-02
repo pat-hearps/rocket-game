@@ -24,9 +24,9 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
 def main(difficulty: int):
 
     checked_difficulty = max(min(difficulty, 10), 1)  # enforce between 1-10
-    INVERSE_DIFFICULTY = 10 - checked_difficulty
+    inverse_difficulty = 10 - checked_difficulty
 
-    print(f"running at difficulty = {difficulty}  (inverse = {INVERSE_DIFFICULTY})")
+    print(f"running at difficulty = {difficulty}  (inverse = {inverse_difficulty})")
     pygame.init()
 
     # Create the screen object
@@ -44,7 +44,7 @@ def main(difficulty: int):
 
     # Create a custom event for adding a new enemy
     ADDENEMY = pygame.USEREVENT + 1  # just the last reserved event, plus 1
-    spawn_freq = INVERSE_DIFFICULTY * 150 + 100
+    spawn_freq = inverse_difficulty * 150 + 100
     print(f"spawning enemies every {spawn_freq} millis")
     pygame.time.set_timer(ADDENEMY, millis=spawn_freq)  # spawn every {freq} milliseconds
 
@@ -85,7 +85,7 @@ def main(difficulty: int):
                     # Add a new enemy?
             elif event.type == ADDENEMY:
                 # Create the new enemy and add it to sprite groups
-                new_enemy = Enemy(size=SPRITE_SIZE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH, difficulty_scaler=INVERSE_DIFFICULTY)
+                new_enemy = Enemy(size=SPRITE_SIZE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH, difficulty_scaler=inverse_difficulty)
                 enemies.add(new_enemy)
                 all_sprites.add(new_enemy)
 
