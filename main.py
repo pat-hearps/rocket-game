@@ -34,7 +34,7 @@ def main(difficulty: int):
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
     # Set up scrolling background images
-    background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=1)
+    background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=SPRITE_SIZE)
     bg_width = background.get_width()
     bg_height = background.get_height()
 
@@ -69,7 +69,7 @@ def main(difficulty: int):
         i = 0
         while(i < n_tiles_scrolling):
             for t in range(n_tiles_across):
-                screen.blit(background, dest=(t * bg_height, bg_width * i + scroll)) 
+                screen.blit(background, dest=(t * bg_width, bg_height * i - scroll)) 
             i += 1
         # FRAMERATE FOR SCROLLING 
         scroll -= scroll_rate
