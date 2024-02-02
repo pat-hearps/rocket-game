@@ -4,16 +4,13 @@ import random
 
 import pygame
 from pygame.locals import (
-    RLEACCEL,
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
     K_ESCAPE,
     KEYDOWN,
     QUIT,
 )
 from pygame.transform import rotozoom
+
+from sprites import Player
 
 ROCKET_MOVE_RATE = 4
 SPRITE_SIZE = 2
@@ -53,35 +50,7 @@ scroll = 0  # start of background scrolling
 scroll_rate = 1.5
 
 
-# Define a Player object by extending pygame.sprite.Sprite
-# The surface drawn on the screen is now an attribute of 'player'
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super(Player, self).__init__()
-        # self.surf = pygame.Surface((75, 25))
-        # self.surf.fill((255, 255, 255))
-        self.surf = rotozoom(pygame.image.load("art/RocketWhiteSideR.png").convert_alpha(), angle=0, scale=SPRITE_SIZE*2)
-        # self.surf.set_colorkey((255, 255, 255), RLEACCEL)  # if background is white
-        self.rect = self.surf.get_rect(center=(40, SCREEN_HEIGHT / 2))  # start in middle of screen
-    # Move the sprite based on user keypresses
-    def update(self, pressed_keys):
-        if pressed_keys[K_UP]:
-            self.rect.move_ip(0, -ROCKET_MOVE_RATE)
-        if pressed_keys[K_DOWN]:
-            self.rect.move_ip(0, ROCKET_MOVE_RATE)
-        if pressed_keys[K_LEFT]:
-            self.rect.move_ip(-ROCKET_MOVE_RATE, 0)
-        if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(ROCKET_MOVE_RATE, 0)
-        # Keep player on the screen
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > SCREEN_WIDTH:
-            self.rect.right = SCREEN_WIDTH
-        if self.rect.top <= 0:
-            self.rect.top = 0
-        if self.rect.bottom >= SCREEN_HEIGHT:
-            self.rect.bottom = SCREEN_HEIGHT
+
 
 # Define the enemy object by extending pygame.sprite.Sprite
 # The surface you draw on the screen is now an attribute of 'enemy'
@@ -125,7 +94,7 @@ print(f"spawning enemies every {spawn_freq} millis")
 pygame.time.set_timer(ADDENEMY, millis=spawn_freq)  # spawn every {freq} milliseconds
 
 # Instantiate player. Right now, this is just a rectangle.
-player = Player()
+player = Player(size=SPRITE_SIZE, move_rate=ROCKET_MOVE_RATE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH)
 
 # Create groups to hold enemy sprites and all sprites
 # - enemies is used for collision detection and position updates
