@@ -39,8 +39,8 @@ def main(difficulty: int):
     bg_height = background.get_height()
 
     # HERE 1 IS THE CONSTANT FOR REMOVING BUFFERING - change to higher number if you get buffering of the imager
-    n_tiles_scrolling = math.ceil(SCREEN_HEIGHT / bg_width) + 1
-    n_tiles_across = math.ceil(SCREEN_WIDTH / bg_height)  # how many tiles to stitch together to fill the screen, don't need extra
+    n_tiles_scrolling = math.ceil(SCREEN_HEIGHT / bg_height) + 1
+    n_tiles_across = math.ceil(SCREEN_WIDTH / bg_width)  # how many tiles to stitch together to fill the screen, don't need extra
     scroll = 0  # start of background scrolling
     scroll_rate = 1.5
 
@@ -69,7 +69,7 @@ def main(difficulty: int):
         i = 0
         while(i < n_tiles_scrolling):
             for t in range(n_tiles_across):
-                screen.blit(background, dest=(bg_width * i + scroll, t * bg_height)) 
+                screen.blit(background, dest=(t * bg_height, bg_width * i + scroll)) 
             i += 1
         # FRAMERATE FOR SCROLLING 
         scroll -= scroll_rate
