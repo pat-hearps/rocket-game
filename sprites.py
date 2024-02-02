@@ -65,14 +65,14 @@ class Enemy(pygame.sprite.Sprite):
         self.surf = rotozoom(pygame.image.load(f"art/{enemy_art[self.id]}").convert_alpha(), angle=0, scale=self.size)
         self.rect = self.surf.get_rect(
             center=(
-                random.randint(self.width_lim + 20, self.width_lim + 100),  # spawns somewhere off right edge of screen, random distance
-                random.randint(0, self.height_lim),  # spawns somewhere between bottom and top of screen
+                random.randint(0, self.width_lim),  # spawns somewhere between left and right of screen
+                -random.randint(self.height_lim + 10, self.height_lim + 50),  # spawns somewhere off top edge of screen, random distance
             )
         )
 
     # Move the sprite based on speed
     # Remove the sprite when it passes the left edge of the screen
     def update(self):
-        self.rect.move_ip(-self.speed, 0)
+        self.rect.move_ip(0, self.speed)
         if self.rect.right < 0:
             self.kill()
