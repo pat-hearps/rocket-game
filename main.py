@@ -14,115 +14,117 @@ from sprites import Player, Enemy
 
 ROCKET_MOVE_RATE = 4
 SPRITE_SIZE = 2
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--difficulty","-d", type=int, default=4)
-args = parser.parse_args()
-difficulty = args.difficulty
-
 BASE_NME_SPEED = 5.0  # pixels / frame
 BASE_NME_SPAWN_RATE = 400.0  # milliseconds between spawns
-checked_difficulty = max(min(difficulty, 10), 1)  # enforce between 1-10
-INVERSE_DIFFICULTY = 10 - checked_difficulty
-
-print(f"running at difficulty = {difficulty}  (inverse = {INVERSE_DIFFICULTY})")
-
 
 # Define constants for the screen width and height
 SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
 
-pygame.init()
 
-# Create the screen object
-# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+def main(difficulty: int):
 
-# Set up scrolling background images
-background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=SPRITE_SIZE)
-bg_width = background.get_width()
+    checked_difficulty = max(min(difficulty, 10), 1)  # enforce between 1-10
+    INVERSE_DIFFICULTY = 10 - checked_difficulty
 
-# HERE 1 IS THE CONSTANT FOR REMOVING BUFFERING - change to higher number if you get buffering of the imager
-n_tiles = math.ceil(SCREEN_WIDTH / bg_width) + 1
-scroll = 0  # start of background scrolling
-scroll_rate = 1.5
+    print(f"running at difficulty = {difficulty}  (inverse = {INVERSE_DIFFICULTY})")
+    pygame.init()
 
+    # Create the screen object
+    # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+    # Set up scrolling background images
+    background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=SPRITE_SIZE)
+    bg_width = background.get_width()
 
-# Create a custom event for adding a new enemy
-ADDENEMY = pygame.USEREVENT + 1  # just the last reserved event, plus 1
-spawn_freq = INVERSE_DIFFICULTY * 150 + 100
-print(f"spawning enemies every {spawn_freq} millis")
-pygame.time.set_timer(ADDENEMY, millis=spawn_freq)  # spawn every {freq} milliseconds
+    # HERE 1 IS THE CONSTANT FOR REMOVING BUFFERING - change to higher number if you get buffering of the imager
+    n_tiles = math.ceil(SCREEN_WIDTH / bg_width) + 1
+    scroll = 0  # start of background scrolling
+    scroll_rate = 1.5
 
-# Instantiate player. Right now, this is just a rectangle.
-player = Player(size=SPRITE_SIZE, move_rate=ROCKET_MOVE_RATE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH)
+    # Create a custom event for adding a new enemy
+    ADDENEMY = pygame.USEREVENT + 1  # just the last reserved event, plus 1
+    spawn_freq = INVERSE_DIFFICULTY * 150 + 100
+    print(f"spawning enemies every {spawn_freq} millis")
+    pygame.time.set_timer(ADDENEMY, millis=spawn_freq)  # spawn every {freq} milliseconds
 
-# Create groups to hold enemy sprites and all sprites
-# - enemies is used for collision detection and position updates
-# - all_sprites is used for rendering
-enemies = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group()
-all_sprites.add(player)
+    # Instantiate player. Right now, this is just a rectangle.
+    player = Player(size=SPRITE_SIZE, move_rate=ROCKET_MOVE_RATE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH)
 
-# Setup the clock for a decent framerate - before game loop begins
-clock = pygame.time.Clock()
+    # Create groups to hold enemy sprites and all sprites
+    # - enemies is used for collision detection and position updates
+    # - all_sprites is used for rendering
+    enemies = pygame.sprite.Group()
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(player)
 
-run = True
-while run:
-    # append background image to front of same image
-    i = 0
-    while(i < n_tiles): 
-        screen.blit(background, dest=(bg_width * i + scroll, 0)) 
-        i += 1
-    # FRAMERATE FOR SCROLLING 
-    scroll -= scroll_rate
-  
-    # RESET THE SCROLL FRAME 
-    if abs(scroll) > bg_width: 
-        scroll = 0
+    # Setup the clock for a decent framerate - before game loop begins
+    clock = pygame.time.Clock()
 
-    # Look at every event in the queue
-    for event in pygame.event.get():
-        # Did the user hit a key?
-        if event.type == KEYDOWN:
-            # Was it the Escape key? If so, stop the loop.
-            if event.key == K_ESCAPE:
+    run = True
+    while run:
+        # append background image to front of same image
+        i = 0
+        while(i < n_tiles): 
+            screen.blit(background, dest=(bg_width * i + scroll, 0)) 
+            i += 1
+        # FRAMERATE FOR SCROLLING 
+        scroll -= scroll_rate
+    
+        # RESET THE SCROLL FRAME 
+        if abs(scroll) > bg_width: 
+            scroll = 0
+
+        # Look at every event in the queue
+        for event in pygame.event.get():
+            # Did the user hit a key?
+            if event.type == KEYDOWN:
+                # Was it the Escape key? If so, stop the loop.
+                if event.key == K_ESCAPE:
+                    run = False
+                    # Add a new enemy?
+            elif event.type == ADDENEMY:
+                # Create the new enemy and add it to sprite groups
+                new_enemy = Enemy(size=SPRITE_SIZE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH, difficulty_scaler=INVERSE_DIFFICULTY)
+                enemies.add(new_enemy)
+                all_sprites.add(new_enemy)
+
+            # Did the user click the window close button? If so, stop the loop.
+            elif event.type == QUIT:
                 run = False
-                # Add a new enemy?
-        elif event.type == ADDENEMY:
-            # Create the new enemy and add it to sprite groups
-            new_enemy = Enemy(size=SPRITE_SIZE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH, difficulty_scaler=INVERSE_DIFFICULTY)
-            enemies.add(new_enemy)
-            all_sprites.add(new_enemy)
 
-        # Did the user click the window close button? If so, stop the loop.
-        elif event.type == QUIT:
+        pressed_keys: dict = pygame.key.get_pressed()
+        player.update(pressed_keys)
+
+        # Update all enemy positions
+        enemies.update()  # calls self.update() method on all enemy sprites in the group
+
+        # Redraw all sprites including player
+        for entity in all_sprites:
+            screen.blit(entity.surf, entity.rect)
+
+        # Check if any enemies have collided with the player
+        if pygame.sprite.spritecollideany(player, enemies):
+            # If so, then remove the player and stop the loop
+            player.kill()
             run = False
 
-    pressed_keys: dict = pygame.key.get_pressed()
-    player.update(pressed_keys)
+        # Draw the player on the screen
+        screen.blit(player.surf, player.rect)
 
-    # Update all enemy positions
-    enemies.update()  # calls self.update() method on all enemy sprites in the group
+        # Flip the display
+        pygame.display.flip()
 
-    # Redraw all sprites including player
-    for entity in all_sprites:
-        screen.blit(entity.surf, entity.rect)
+        # Last step in loop - ensure program maintains desired frame rate of X frames per second
+        clock.tick(60)
 
-    # Check if any enemies have collided with the player
-    if pygame.sprite.spritecollideany(player, enemies):
-        # If so, then remove the player and stop the loop
-        player.kill()
-        run = False
+    # Done! Time to quit.
+    pygame.quit()
 
-    # Draw the player on the screen
-    screen.blit(player.surf, player.rect)
 
-    # Flip the display
-    pygame.display.flip()
-
-    # Last step in loop - ensure program maintains desired frame rate of X frames per second
-    clock.tick(60)
-
-# Done! Time to quit.
-pygame.quit()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--difficulty","-d", type=int, default=4)
+    args = parser.parse_args()
+    difficulty = args.difficulty
+    main(difficulty)
