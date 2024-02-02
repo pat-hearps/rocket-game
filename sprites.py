@@ -1,4 +1,4 @@
-
+import random
 
 import pygame
 from pygame.locals import (
@@ -8,6 +8,8 @@ from pygame.locals import (
     K_RIGHT,
 )
 from pygame.transform import rotozoom
+
+from utils import scale_variable
 
 # Define a Player object by extending pygame.sprite.Sprite
 # The surface drawn on the screen is now an attribute of 'player'
@@ -38,3 +40,39 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom >= self.height_lim:
             self.rect.bottom = self.height_lim
+
+
+# Define the enemy object by extending pygame.sprite.Sprite
+# The surface you draw on the screen is now an attribute of 'enemy'
+enemy_art = {
+    1 : "BluePlanet.png",
+    2 : "FullMoon.png",
+    3 : "PurplePlanet.png",
+    4 : "RedPlanet.png",
+    5 : "Earth.png",
+    6 : "Hurricane.png",
+    7 : "RedMoon.png"
+}
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, size: float, screen_height: int, screen_width: int, difficulty_scaler: float):
+        super(Enemy, self).__init__()
+        self.size = size
+        self.height_lim = screen_height
+        self.width_lim = screen_width
+        self.id = random.randint(1, 7)
+        self.speed =  scale_variable(self.id, inverse_difficulty=difficulty_scaler)
+
+        self.surf = rotozoom(pygame.image.load(f"art/{enemy_art[self.id]}").convert_alpha(), angle=0, scale=self.size)
+        self.rect = self.surf.get_rect(
+            center=(
+                random.randint(self.width_lim + 20, self.width_lim + 100),  # spawns somewhere off right edge of screen, random distance
+                random.randint(0, self.height_lim),  # spawns somewhere between bottom and top of screen
+            )
+        )
+
+    # Move the sprite based on speed
+    # Remove the sprite when it passes the left edge of the screen
+    def update(self):
+        self.rect.move_ip(-self.speed, 0)
+        if self.rect.right < 0:
+            self.kill()

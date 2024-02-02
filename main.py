@@ -1,6 +1,6 @@
 import argparse
 import math
-import random
+
 
 import pygame
 from pygame.locals import (
@@ -10,7 +10,7 @@ from pygame.locals import (
 )
 from pygame.transform import rotozoom
 
-from sprites import Player
+from sprites import Player, Enemy
 
 ROCKET_MOVE_RATE = 4
 SPRITE_SIZE = 2
@@ -27,9 +27,6 @@ INVERSE_DIFFICULTY = 10 - checked_difficulty
 
 print(f"running at difficulty = {difficulty}  (inverse = {INVERSE_DIFFICULTY})")
 
-def scale_variable(variable, inverse_difficulty=INVERSE_DIFFICULTY):
-    """applies slightly non-linear increasing scale to speed etc based on difficulty level"""
-    return variable * (2 * (1.25 ** -inverse_difficulty))
 
 # Define constants for the screen width and height
 SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
@@ -49,42 +46,6 @@ n_tiles = math.ceil(SCREEN_WIDTH / bg_width) + 1
 scroll = 0  # start of background scrolling
 scroll_rate = 1.5
 
-
-
-
-# Define the enemy object by extending pygame.sprite.Sprite
-# The surface you draw on the screen is now an attribute of 'enemy'
-enemy_art = {
-    1 : "BluePlanet.png",
-    2 : "FullMoon.png",
-    3 : "PurplePlanet.png",
-    4 : "RedPlanet.png",
-    5 : "Earth.png",
-    6 : "Hurricane.png",
-    7 : "RedMoon.png"
-}
-class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
-        super(Enemy, self).__init__()
-        self.id = random.randint(1, 7)
-        self.speed =  scale_variable(self.id)
-        # self.surf = pygame.Surface((20, 10))
-        # self.surf.fill((170, 170, 170))
-        self.surf = rotozoom(pygame.image.load(f"art/{enemy_art[self.id]}").convert_alpha(), angle=0, scale=SPRITE_SIZE)
-        self.rect = self.surf.get_rect(
-            center=(
-                random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),  # spawns somewhere off right edge of screen, random distance
-                random.randint(0, SCREEN_HEIGHT),  # spawns somewhere between bottom and top of screen
-            )
-        )
-        
-
-    # Move the sprite based on speed
-    # Remove the sprite when it passes the left edge of the screen
-    def update(self):
-        self.rect.move_ip(-self.speed, 0)
-        if self.rect.right < 0:
-            self.kill()
 
 
 # Create a custom event for adding a new enemy
@@ -130,7 +91,7 @@ while run:
                 # Add a new enemy?
         elif event.type == ADDENEMY:
             # Create the new enemy and add it to sprite groups
-            new_enemy = Enemy()
+            new_enemy = Enemy(size=SPRITE_SIZE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH, difficulty_scaler=INVERSE_DIFFICULTY)
             enemies.add(new_enemy)
             all_sprites.add(new_enemy)
 
