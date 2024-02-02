@@ -70,13 +70,13 @@ def main(difficulty: int):
         i = 0
         while(i < n_tiles_scrolling):
             for t in range(n_tiles_across):
-                screen.blit(background, dest=(t * bg_width, bg_height * i - scroll)) 
+                screen.blit(background, dest=(t * bg_width, bg_height * i + scroll)) 
             i += 1
         # FRAMERATE FOR SCROLLING 
-        scroll -= scroll_rate
+        scroll += scroll_rate
     
         # RESET THE SCROLL FRAME 
-        if abs(scroll) > bg_width: 
+        if abs(scroll) > bg_height: 
             scroll = 0
 
         # Look at every event in the queue
