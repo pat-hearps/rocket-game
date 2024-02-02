@@ -16,9 +16,9 @@ from utils import scale_variable
 class Player(pygame.sprite.Sprite):
     def __init__(self, size: float, move_rate: float, screen_height: int, screen_width: int):
         super(Player, self).__init__()
-        self.surf = rotozoom(pygame.image.load("art/RocketWhiteSideR.png").convert_alpha(), angle=0, scale=size*2)
+        self.surf = rotozoom(pygame.image.load("art/RocketWhiteSideR.png").convert_alpha(), angle=90, scale=size*2)
         self.move_rate = move_rate
-        self.rect = self.surf.get_rect(center=(40, screen_height / 2))  # start in middle of screen
+        self.rect = self.surf.get_rect(center=(screen_width / 2, screen_height-50))  # start in middle of screen
         self.height_lim = screen_height
         self.width_lim = screen_width
     # Move the sprite based on user keypresses
