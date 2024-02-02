@@ -67,11 +67,11 @@ def main(difficulty: int):
     run = True
     while run:
         # append background image to front of same image
-        i = 0
-        while(i < n_tiles_scrolling):
+
+        for i in range(n_tiles_scrolling):
             for t in range(n_tiles_across):
-                screen.blit(background, dest=(t * bg_width, bg_height * i + scroll)) 
-            i += 1
+                screen.blit(background, dest=(t * bg_width, -bg_height * i + scroll)) 
+
         # FRAMERATE FOR SCROLLING 
         scroll += scroll_rate
     
