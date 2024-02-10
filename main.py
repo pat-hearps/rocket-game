@@ -65,18 +65,9 @@ class Game:
 
         run = True
         while run:
+            
             # append background image to front of same image
-
-            for i in range(self.n_tiles_scrolling):
-                for t in range(self.n_tiles_across):
-                    self.screen.blit(self.background, dest=(t * self.bg_width, -self.bg_height * i + self.scroll)) 
-
-            # FRAMERATE FOR SCROLLING 
-            self.scroll += self.scroll_rate
-        
-            # RESET THE SCROLL FRAME 
-            if abs(self.scroll) > self.bg_height: 
-                self.scroll = 0
+            self.scroll_background()
 
             # Look at every event in the queue
             for event in pygame.event.get():
@@ -121,6 +112,19 @@ class Game:
             # Last step in loop - ensure program maintains desired frame rate of X frames per second
             self.clock.tick(60)
 
+
+    def scroll_background(self):
+        """Just handles scrolling the background at a constant rate"""
+        for i in range(self.n_tiles_scrolling):
+            for t in range(self.n_tiles_across):
+                self.screen.blit(self.background, dest=(t * self.bg_width, -self.bg_height * i + self.scroll)) 
+
+            # FRAMERATE FOR SCROLLING 
+        self.scroll += self.scroll_rate
+        
+            # RESET THE SCROLL FRAME 
+        if abs(self.scroll) > self.bg_height: 
+            self.scroll = 0
 
 
 
