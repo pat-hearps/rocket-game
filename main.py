@@ -21,11 +21,7 @@ BASE_NME_SPAWN_RATE = 400.0  # milliseconds between spawns
 SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
 
 
-def main(inverse_difficulty: int):
-
-    # Create the screen object
-    # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+def main(inverse_difficulty: int, screen: pygame.Surface):
 
     # Set up scrolling background images
     background = rotozoom(pygame.image.load("./art/Green Nebula 4 - 512x512.png").convert(), angle=0, scale=SPRITE_SIZE)
@@ -134,4 +130,8 @@ if __name__ == "__main__":
     
     pygame.init()
 
-    main(inverse_difficulty)
+    # Create the screen object
+    # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    main(inverse_difficulty, screen)
