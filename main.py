@@ -21,13 +21,7 @@ BASE_NME_SPAWN_RATE = 400.0  # milliseconds between spawns
 SCREEN_WIDTH, SCREEN_HEIGHT = 1400, 800
 
 
-def main(difficulty: int):
-
-    checked_difficulty = max(min(difficulty, 10), 1)  # enforce between 1-10
-    inverse_difficulty = 10 - checked_difficulty
-
-    print(f"running at difficulty = {difficulty}  (inverse = {inverse_difficulty})")
-    pygame.init()
+def main(inverse_difficulty: int):
 
     # Create the screen object
     # The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
@@ -131,4 +125,13 @@ if __name__ == "__main__":
     parser.add_argument("--difficulty","-d", type=int, default=4)
     args = parser.parse_args()
     difficulty = args.difficulty
-    main(difficulty)
+
+
+    checked_difficulty = max(min(difficulty, 10), 1)  # enforce between 1-10
+    inverse_difficulty = 10 - checked_difficulty
+
+    print(f"running at difficulty = {difficulty}  (inverse = {inverse_difficulty})")
+    
+    pygame.init()
+
+    main(inverse_difficulty)
