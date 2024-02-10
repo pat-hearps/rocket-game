@@ -85,30 +85,35 @@ class Game:
                 elif event.type == QUIT:
                     self.run = False
 
-            pressed_keys: dict = pygame.key.get_pressed()
-            self.player.update(pressed_keys)
-
-            # Update all enemy positions
-            self.enemies.update()  # calls self.update() method on all enemy sprites in the group
-
-            # Redraw all sprites including player
-            for entity in self.all_sprites:
-                self.screen.blit(entity.surf, entity.rect)
-
-            # Check if any enemies have collided with the player
-            if pygame.sprite.spritecollideany(self.player, self.enemies):
-                # If so, then remove the player and stop the loop
-                self.player.kill()
-                self.run = False
-
-            # Draw the player on the screen
-            self.screen.blit(self.player.surf, self.player.rect)
+            self.update_all_sprites()
 
             # Flip the display
             pygame.display.flip()
 
             # Last step in loop - ensure program maintains desired frame rate of X frames per second
             self.clock.tick(60)
+
+    def update_all_sprites(self):
+        """Handle both player-directed movement of the rocket, and auto movement of the planet sprites.
+        Blits screen but does not flip display."""
+        pressed_keys: dict = pygame.key.get_pressed()
+        self.player.update(pressed_keys)
+
+            # Update all enemy positions
+        self.enemies.update()  # calls self.update() method on all enemy sprites in the group
+
+            # Redraw all sprites including player
+        for entity in self.all_sprites:
+            self.screen.blit(entity.surf, entity.rect)
+
+            # Check if any enemies have collided with the player
+        if pygame.sprite.spritecollideany(self.player, self.enemies):
+                # If so, then remove the player and stop the loop
+            self.player.kill()
+            self.run = False
+
+            # Draw the player on the screen
+        self.screen.blit(self.player.surf, self.player.rect)
 
 
     def spawn_enemy(self):
