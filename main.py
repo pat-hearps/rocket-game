@@ -63,8 +63,8 @@ class Game:
         # Setup the clock for a decent framerate - before game loop begins
         self.clock = pygame.time.Clock()
 
-        run = True
-        while run:
+        self.run = True
+        while self.run:
 
             # append background image to front of same image
             self.scroll_background()
@@ -75,7 +75,7 @@ class Game:
                 if event.type == KEYDOWN:
                     # Was it the Escape key? If so, stop the loop.
                     if event.key == K_ESCAPE:
-                        run = False
+                        self.run = False
 
                 elif event.type == self.ADDENEMY:
                     # Create the new enemy and add it to sprite groups
@@ -83,7 +83,7 @@ class Game:
 
                 # Did the user click the window close button? If so, stop the loop.
                 elif event.type == QUIT:
-                    run = False
+                    self.run = False
 
             pressed_keys: dict = pygame.key.get_pressed()
             self.player.update(pressed_keys)
@@ -99,7 +99,7 @@ class Game:
             if pygame.sprite.spritecollideany(self.player, self.enemies):
                 # If so, then remove the player and stop the loop
                 self.player.kill()
-                run = False
+                self.run = False
 
             # Draw the player on the screen
             self.screen.blit(self.player.surf, self.player.rect)
