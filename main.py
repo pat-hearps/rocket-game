@@ -65,7 +65,7 @@ class Game:
 
         run = True
         while run:
-            
+
             # append background image to front of same image
             self.scroll_background()
 
@@ -76,12 +76,10 @@ class Game:
                     # Was it the Escape key? If so, stop the loop.
                     if event.key == K_ESCAPE:
                         run = False
-                        # Add a new enemy?
+
                 elif event.type == self.ADDENEMY:
                     # Create the new enemy and add it to sprite groups
-                    new_enemy = Enemy(size=SPRITE_SIZE, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH, difficulty_scaler=inverse_difficulty)
-                    self.enemies.add(new_enemy)
-                    self.all_sprites.add(new_enemy)
+                    self.spawn_enemy()
 
                 # Did the user click the window close button? If so, stop the loop.
                 elif event.type == QUIT:
@@ -111,6 +109,14 @@ class Game:
 
             # Last step in loop - ensure program maintains desired frame rate of X frames per second
             self.clock.tick(60)
+
+
+    def spawn_enemy(self):
+        """Create a new enemy sprite and add it to the sprite groups"""
+        new_enemy = Enemy(size=SPRITE_SIZE, screen_height=SCREEN_HEIGHT,
+                          screen_width=SCREEN_WIDTH, difficulty_scaler=inverse_difficulty)
+        self.enemies.add(new_enemy)
+        self.all_sprites.add(new_enemy)
 
 
     def scroll_background(self):
